@@ -1,0 +1,50 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'hook 16831V.Local
+
+V.Local.skey.Declare(String)
+V.local.skey.Redim(0,1)
+V.Local.sPath.Declare(String)
+V.Local.sFile.Declare(String)
+V.Local.sFile.Redim(0,1)
+V.Local.iTemp.Declare(Long)
+V.Local.sdata.Declare(String)
+
+V.Local.iX.Declare(Long)
+V.Local.sLine.Declare(String)
+V.Local.bRet.Declare(Boolean)
+F.Intrinsic.Debug.Stop
+V.local.isource.Declare(Long)
+
+F.Intrinsic.File.File2String(V.Passed.INPUT-FILE,V.Local.sData)
+
+F.Intrinsic.String.Split(V.Local.sData,V.Ambient.NewLine,V.Local.sData)
+F.Intrinsic.Control.For(V.Local.iX,V.Local.sData.LBound,V.Local.sData.UBound,1)
+	F.Intrinsic.String.Split(V.Local.sData(v.Local.iX),"*!*",V.Local.sLine)
+	F.Intrinsic.Control.If(V.Local.sLine.UBound,>=,4)
+		F.Intrinsic.String.Concat(V.local.sLine(0),V.local.sLine(1),V.Local.skey(0))
+		F.Intrinsic.String.Concat(V.local.sLine(2),V.local.sLine(3),V.Local.sLine(4),V.Local.skey(1))
+
+		F.Global.DocumentControl.GetLinkID(V.Local.skey(0),37,V.Local.iSource)
+		F.Intrinsic.Control.If(V.Local.isource,<>,-1)
+			F.Global.DocumentControl.CreateReference(V.Local.skey(1),25,V.Local.iTemp)
+			F.Intrinsic.Control.If(V.Local.iTemp,<>,-1)
+				F.Global.DocumentControl.Copy(V.local.isource,V.Local.iTemp,V.Local.bret)
+				F.Intrinsic.Control.If(V.Local.bRet,=,False)
+					'F.Intrinsic.UI.Msgbox("Unable to copy or no document references exist")
+				F.Intrinsic.Control.EndIf
+			F.Intrinsic.Control.Endif
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Next(V.Local.iX)
+
+
+Program.Sub.Main.End
+
+
